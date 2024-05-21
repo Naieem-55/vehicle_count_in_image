@@ -1,16 +1,14 @@
 import cv2
 import numpy as np
+from canny_edge import canny_edge_detector
 
 def detect_vehicles(image_path, output_path):
-    # Load the image
+
     image = cv2.imread(image_path)
-    gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+    edges = canny_edge_detector(image, 50, 150)
 
-    # Apply Gaussian blur to the grayscale image
-    blurred = cv2.GaussianBlur(gray, (5, 5), 0)
-
-    # Perform edge detection using Canny
-    edges = cv2.Canny(blurred, 50, 150)
+    if edges.dtype != np.uint8:
+        edges = (edges * 255).astype(np.uint8)
 
     # Apply morphological operations
     kernel = cv2.getStructuringElement(cv2.MORPH_RECT, (5, 5))
@@ -36,15 +34,9 @@ def detect_vehicles(image_path, output_path):
     # Save the result image to the specified output path
     cv2.imwrite(output_path, image)
 
-    # Display the result 
-    cv2.imshow('Vehicle Detection', image)
-    cv2.waitKey(0)
-    cv2.destroyAllWindows()
-
     print(f'Number of vehicles detected : {vehicle_count}')
 
-input_path = r'C:\Users\Hp\OneDrive\Desktop\Vehicle_Count\Input Image\car2.jpg'
-output_path = r'C:\Users\Hp\OneDrive\Desktop\Vehicle_Count\Output Image/output_image.jpg'
+input_path = r'C:\Users\Hp\OneDrive\Desktop\vehicle_count_in_image\Input Image\car3.jpg'
+output_path = r'C:\Users\Hp\OneDrive\Desktop\vehicle_count_in_image\Output Image\output_car3.jpg'
 
-# Example usage
 detect_vehicles(input_path, output_path)
